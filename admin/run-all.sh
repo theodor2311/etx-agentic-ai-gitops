@@ -21,6 +21,21 @@ if ! [[ "$NUM_USERS" =~ ^[1-9][0-9]*$ ]]; then
     exit 1
 fi
 
+# Validate if user is logged in as admin
+if ! oc whoami &> /dev/null; then
+    echo "Error: Not logged in to the cluster. Please run 'oc login' first."
+    exit 1
+fi
+
+CURRENT_USER=$(oc whoami)
+if [ "${CURRENT_USER}" != "admin" ]; then
+    echo "Error: Must be logged in as 'admin'. Current user: ${CURRENT_USER}"
+    exit 1
+fi
+
+echo "✓ Logged in as: ${CURRENT_USER}"
+echo
+
 echo "================================================================"
 echo "Running all admin scripts for ${NUM_USERS} users"
 echo "================================================================"
