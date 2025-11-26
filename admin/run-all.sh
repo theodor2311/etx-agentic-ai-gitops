@@ -35,42 +35,30 @@ SCRIPTS=(
     "05-create-java-app-build.sh"
 )
 
-# Track if any script failed
-FAILED=0
-
 # Run each script in order
 for script in "${SCRIPTS[@]}"; do
     SCRIPT_PATH="${SCRIPT_DIR}/${script}"
-    
+
     if [ ! -f "${SCRIPT_PATH}" ]; then
         echo "Error: Script ${script} not found!"
-        FAILED=1
-        continue
+        exit 1
     fi
-    
+
     echo "================================================================"
     echo "Running: ${script}"
     echo "================================================================"
     echo
-    
-    # Make sure script is executable
-    chmod +x "${SCRIPT_PATH}"
-    
+
     # Run the script with the number of users parameter
     "${SCRIPT_PATH}" "${NUM_USERS}"
-    
+
     # Check exit status
     if [ $? -ne 0 ]; then
         echo
         echo "✗ Script ${script} failed!"
-        FAILED=1
         echo
-        read -p "Continue with remaining scripts? (y/n): " -n 1 -r
-        echo
-        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-            echo "Aborting execution."
-            exit 1
-        fi
+        echo "Aborting execution."
+        exit 1
     else
         echo
         echo "✓ Script ${script} completed successfully"
@@ -79,12 +67,7 @@ for script in "${SCRIPTS[@]}"; do
 done
 
 echo "================================================================"
-if [ $FAILED -eq 0 ]; then
-    echo "All scripts completed successfully!"
-else
-    echo "Some scripts failed. Please review the output above."
-fi
+echo "All scripts completed successfully!"
 echo "================================================================"
 
-exit $FAILED
-
+exit 0
