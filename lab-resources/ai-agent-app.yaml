@@ -11,7 +11,7 @@ spec:
     targetRevision: HEAD
   destination:
     server: https://kubernetes.default.svc
-    namespace: ${NAMESPACE}
+    namespace: user26-ai-agent
   syncPolicy:
     automated:
       prune: true
